@@ -86,6 +86,7 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 #footer {width:100%; height:18px; background:#666; color:white; -moz-box-shadow : 0px 1px 2px #000; -webkit-box-shadow : 0px 1px 2px #000; box-shadow : 0px 1px 2px #000;}
 #footer h1 {font-size:14px; font-weight:normal; text-transform:uppdercase; letter-spacing:6px; text-align:center; line-height:18px;}
 #no_display {display:none;}
+#stat {float:right; display:table; margin-top:-30px; margin-right:5px;}
 </style>
 
 <script src = "./scripts/jquery-1.8.0.min.js"></script>
@@ -129,17 +130,22 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 							
 							/* img path generate */
 							var kk = j.new_name;
-							var res = kk.split('-');
-							if ( res[2] < 3 ){
+							
+							var author = parseInt(kk.substr(5,4));
+							author = 'R-'+author;
+							var section = parseInt(kk.substr(9,1));
+							
+							if ( section < 3 ){
 								var thm = 'Print';
 							}else{
 								var thm = 'Digital';
 							}
-							var artist = 'R-'+parseInt(res[1]);
-							var path = 'files/'+thm+'/'+artist+'/'+j.actual_imgid;
+							
+							var path = 'files/'+thm+'/'+author+'/'+j.actual_imgid;
 							var getHtml = '<img src="'+path+'" '+j.flag+' />';
 							$('#get_photo').html(getHtml);
-							$('#imgid').attr('title',res[1]);
+							$('#imgid').attr('title',j.actual_imgid);
+							img_stat();
 						});
 					},
 				});
@@ -156,6 +162,51 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 			$('#circuit').show();
 			$('#imgid').empty().hide();
 		};
+		
+		
+		
+		
+		
+		var img_stat = function () {
+			var foto_no = $('#imgid').html();
+			var section = $('#get_photo').attr('class');
+			
+			
+			$.ajax({
+				type:'get',
+				url:'imagestat.php',
+				data:{
+					'section':section,
+					'image_no':foto_no
+				},
+			
+				dataType:'json',
+				success:function(data){
+					$.each ( data, function (i,j ){
+					
+						var present = 0;
+						var total = 0;
+						present = j.present_no;
+						present=present+1;
+						total = j.total_img;
+						var st = '';
+						st = present+'/'+total;
+						$('#stat').empty().html(st);
+					});
+				},
+				error:function(jqXHR, status, error,data){
+					console.log('status :',status,'error : ',error);
+				}
+			});
+			
+		
+		};
+		
+		
+		
+		
+		
+		
 		
 		
 		var get_last_marked_image = function(){
@@ -176,17 +227,19 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 						
 						var kk = j.new_name;
 							
-							var res = kk.split('-');
-							if ( res[2] < 3 ){
+							var author = parseInt(kk.substr(5,4));
+							author = 'R-'+author;
+							var section = parseInt(kk.substr(9,1));
+							
+							if ( section < 3 ){
 								var thm = 'Print';
 							}else{
 								var thm = 'Digital';
 							}
-							var artist = 'R-'+parseInt(res[1]);
-							var path = 'files/'+thm+'/'+artist+'/'+j.actual_imgid;
+							var path = 'files/'+thm+'/'+author+'/'+j.actual_imgid;
 							var getHtml = '<img src="'+path+'" '+j.flag+' />';
 							$('#get_photo').html(getHtml);
-							$('#imgid').attr('title',res[1]);
+							$('#imgid').attr('title',j.actual_imgid);
 					});
 				},
 				error:function(jqXHR, status, error,data){
@@ -219,16 +272,18 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 						
 						/* img path generate */
 							var kk = j.new_name;
-							console.log(kk);
-							var res = kk.split('-');
-							if ( res[2] < 3 ){
+							
+							var author = parseInt(kk.substr(5,4));
+							author = 'R-'+author;
+							var section = parseInt(kk.substr(9,1));
+							
+							if ( section < 3 ){
 								var thm = 'Print';
 							}else{
 								var thm = 'Digital';
 							}
-							var artist = 'R-'+parseInt(res[1]);
+							var path = 'files/'+thm+'/'+author+'/'+j.actual_imgid;
 							
-							var path = 'files/'+thm+'/'+artist+'/'+j.actual_imgid;
 							
 							/*var img = new Image();
 							img.src = path;
@@ -241,7 +296,8 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 							var getHtml = '<img src="'+path+'" '+j.flag+' />';
 							$('#get_photo').html(getHtml);
 							
-							$('#imgid').attr('title',res[1]);
+							$('#imgid').attr('title',j.actual_imgid);
+							img_stat();
 					});
 				}				
 			});
@@ -371,6 +427,7 @@ body {width:100%; background:#000; margin:auto; padding:0;}
 	</div>
 	<div class='bottom'>
 		<div id='comp'></div>
+		<div id='stat'></div>
 	</div>
 </div>
 

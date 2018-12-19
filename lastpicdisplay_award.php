@@ -75,7 +75,7 @@
 			
 			$new_name = $chunk[0][6];
 			$imflag = '';
-			$imflag = check_imgwidth ( $chunk[0] );
+			$imflag = check_imgwidth ( $chunk[0],$section_id,$mysqldb );
 			
 			if($temp < count($image_list) - 1)
 			{

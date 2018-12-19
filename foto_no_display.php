@@ -58,7 +58,7 @@
 			
 			$iid = $chunk[4];
 			$flag = '';
-			$flag = check_imgwidth ( $chunk );
+			$flag = check_imgwidth ( $chunk,$section_id,$mysqldb );
 			//echo $flag;
 			
 			foreach($image_list as $key=>$value)
